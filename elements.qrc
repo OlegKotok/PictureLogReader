@@ -1,0 +1,8 @@
+<RCC>
+    <qresource prefix="/elements">
+        <file>elements/LogButton.qml</file>
+        <file>elements/LogSlider.qml</file>
+        <file>elements/Style.qml</file>
+        <file>elements/qmldir</file>
+    </qresource>
+</RCC>

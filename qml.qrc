@@ -1,0 +1,12 @@
+<RCC>
+    <qresource prefix="/">
+        <file>main.qml</file>
+        <file>LogScreen.qml</file>
+        <file>PictureScreen.qml</file>
+        <file>elements/LogButton.qml</file>
+        <file>elements/LogSlider.qml</file>
+        <file>elements/qmldir</file>
+        <file>elements/Style.qml</file>
+        <file>elements/PicButton.qml</file>
+    </qresource>
+</RCC>

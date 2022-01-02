@@ -1,0 +1,4 @@
+singleton Style 1.0 Style.qml
+LogSlider 1.0 LogSlider.qml
+LogButton 1.0 LogButton.qml
+PicButton 1.0 PicButton.qml
