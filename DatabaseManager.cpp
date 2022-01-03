@@ -6,10 +6,12 @@
 #include <QDebug>
 #include <QString>
 #include <QStringLiteral>
+#include <QDateTime>
 
 #include "DatabaseManager.h"
 #include "databaseexeptions.h"
 
+/** path to local database */
 #define _DATABASENAME_ "database.sqlite"
 
 /** Convenient way to print debug info */
@@ -63,12 +65,14 @@ void DatabaseManager::initDatabase()
 
 void DatabaseManager::createLogsTable()
 {
+    databaseMutex.lock();
     QSqlDatabase database = QSqlDatabase::database (QSqlDatabase::defaultConnection);
+    QSqlQuery query (database);
     if (!database.open())
     {
           qDebug() << "Create new log file - opendatabase error exeption";
+          throw DatabaseExeption("Create new log file - opendatabase error exeption", query.lastError(), query.lastQuery());
     }
-    QSqlQuery query (database);
 
     query.prepare(QStringLiteral("CREATE TABLE logs("
                                  " id INTEGER PRIMARY KEY AUTOINCREMENT, "
@@ -91,6 +95,7 @@ void DatabaseManager::createLogsTable()
     {
         qDebug() << "Log-table creating index not critical error exeption";
     }
+    databaseMutex.unlock();
 }
 
 
@@ -124,17 +129,19 @@ bool DatabaseManager::getEventLog (QVector<QString>  &headers,  QVector< QVector
                       " FROM logs "
                       " WHERE date(timestamp) BETWEEN date('now', '%1') AND date('now');"
                   ).arg(timeshift));
+
+    qDebug() << "Query: " << query.lastQuery();
+    databaseMutex.lock();
     if (!query.exec() )
     {
         qDebug() << "Executing query in DatabaseManager::getEventLog processing" <<
                  query.lastQuery() << "query and got:" << query.lastError().text();
         return false;
     }
+    databaseMutex.unlock();
 
     /** Get headers data to the model */
     QSqlRecord rec = query.record();
-    qDebug()<<"sql result: "<<query.size();
-    qDebug()<<"columns: "<<rec.count();
     headers.clear();
     headers.reserve(rec.count());
     for (int i = 0; i < rec.count(); i++)
@@ -148,16 +155,14 @@ bool DatabaseManager::getEventLog (QVector<QString>  &headers,  QVector< QVector
     {
         QVector<QString> row;
         row.reserve(rec.count());
-        qDebug()<<"new row";
         for (int columnIndex = 0; columnIndex < rec.count(); columnIndex++)
         {
             row.append(query.value(columnIndex).toString());
-            qDebug()<<query.value(columnIndex).toString();
         }
         data.push_back(row);
     }
-    qDebug()<<"model result: "<<data.size();
-    qDebug()<<"headers columns: "<<headers.size();
+    qDebug()<<"selected records count: "<<data.size();
+
     return true;
 }
 
@@ -172,7 +177,6 @@ bool DatabaseManager::getEventLog (QVector<QString>  &headers,  QVector< QVector
 QStringList DatabaseManager::getUrlById (const int id)
 {
     QStringList m_details;
-
     QSqlDatabase database = QSqlDatabase::database (
                                         QSqlDatabase::defaultConnection);
     if (!database.open())
@@ -186,12 +190,14 @@ QStringList DatabaseManager::getUrlById (const int id)
                       " FROM logs "
                       " WHERE id = %1 + 1;"
                   ).arg(id));
+    databaseMutex.lock();
     if (!query.exec() )
     {
         qDebug() << "Executing query in DatabaseManager::getEventLog processing" <<
                  query.lastQuery() << "query and got:" << query.lastError().text();
         return m_details;
     }
+    databaseMutex.unlock();
 
     ///< Get details event-log description
     QSqlRecord rec = query.record();
@@ -204,6 +210,55 @@ QStringList DatabaseManager::getUrlById (const int id)
         qDebug()<<"Details : " << query.value(columnIndex).toString();
     }
     return m_details;
+}
+
+
+/*! Function Description: Public slot to push new datas into database
+ *
+ * INPUTS:
+ * PARAMETERS:
+ *      QString photographer - name of photographer
+ *      int width - picture width
+ *      int height - picture height
+ *      QString url - original url
+ *      QString url2 - preview url
+ *      qint64 timestamp - Epoch Unix Timestamp
+ *      QString description - image description
+ */
+void DatabaseManager::pushData (
+        QString photographer,
+        int width,
+        int height,
+        QString url,
+        QString url2,
+        qint64 timestamp,
+        QString description
+      )
+{
+    QSqlDatabase database = QSqlDatabase::database (QSqlDatabase::defaultConnection);
+    QSqlQuery query (database);
+    if (!database.open())
+    {
+          qDebug() << "Add new record - database not open";
+          throw DatabaseExeption("Add new record - database not open", query.lastError(), query.lastQuery());
+    }
+
+    //** prepare query */
+    query.prepare(QStringLiteral("INSERT INTO logs"
+                                 "(timestamp, userName, width, height, url, url2, description) "
+                                 "VALUES("
+                                 "datetime('%1', 'unixepoch'), '%2', '%3', '%4', '%5', '%6', '%7');"
+                                ).arg(QString::number(timestamp),
+                                      photographer, QString::number(width), QString::number(height),
+                                      url, url2, description)
+                  );
+    databaseMutex.lock();
+    if (!query.exec() )
+    {
+        qDebug() << "Cannot add new datas into database!" << Qt::endl;
+        throw DatabaseExeption("Bad query. Cannot add new datas into database!", query.lastError(), query.lastQuery());
+    }
+    databaseMutex.unlock();
 }
 
 
