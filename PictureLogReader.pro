@@ -11,6 +11,7 @@ SOURCES += \
         DatabaseConnector.cpp \
         DatabaseManager.cpp \
         EventLogModel.cpp \
+        JSONParser.cpp \
         main.cpp \
         networkmanager.cpp
 
@@ -34,6 +35,7 @@ HEADERS += \
     DatabaseConnector.h \
     DatabaseManager.h \
     EventLogModel.h \
+    JSONParser.h \
     Singleton.h \
     apikey.h \
     databaseexeptions.h \

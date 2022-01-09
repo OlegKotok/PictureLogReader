@@ -1,27 +1,34 @@
 /*!   FILENAME:  networkmanager.cpp
+ *
  *    DESCRIPTION:
  *           Will take pictures from external source and put it to database
  *           Could be executed in separate thread
+ *
+ *    NOTES:
+ *           To get response from QNetworkAccessManager we need to use signal-slot conception
+ *           To get it we need to run event-loop cycle, normally its started in app.exec(), but that's is not thread we need
+ *           We can't do it in simple thread, like std::thread or QThread, thats why we are creadet inherited singleton object
+ *           and make signal-slots connection when thread will be running, in this case, event-loop will be created in new thread as we need.
+ *
  */
 #include <QDebug>
 #include <QNetworkReply>
 #include <QNetworkAccessManager>
 #include "networkmanager.h"
 #include "apikey.h"
+#include "JSONParser.h"
+#include <DatabaseConnector.h>
 
 template<>
 NetworkManager * Singleton<NetworkManager>::m_st_instance_p = nullptr;
 
 
 /*!Function Description: Make single get rest request to online storage */
-void NetworkManager::loadSinglePage(const int pageToLoad = 1)
+void NetworkManager::loadSinglePage(const QUrl &url)
 {
     /****** get curl request ******/
     qDebug() << "Thread id " << QThread::currentThreadId() << Qt::endl;
-    QNetworkRequest request( QStringLiteral
-                             ("https://api.pexels.com/v1/search?page=%1&per_page=80&query=cats"
-                             ).arg (QString::number (pageToLoad) )
-                           );
+    QNetworkRequest request(url);
     request.setRawHeader("Authorization", _APIKEY_); //change your api key before using
 
     QNetworkReply *reply = manager->get(request); //make request
@@ -29,7 +36,6 @@ void NetworkManager::loadSinglePage(const int pageToLoad = 1)
     QObject::connect(reply, &QNetworkReply::finished, [=](){
         if(reply->error() == QNetworkReply::NoError)
         {
-            qDebug() << "new data recived. Page " << pageToLoad;
             qDebug() << "Reply Thread : " << QThread::currentThreadId() << Qt::endl;
 
             /****** parse response ******/
@@ -45,14 +51,29 @@ void NetworkManager::loadSinglePage(const int pageToLoad = 1)
     qDebug()<<" exit thread ";
 }
 
-/*! Function Description: Parse response from the server */
+/*! Function Description: Parse response from the server and put datas to database*/
 void NetworkManager::parseResponse(QString contents)
 {
     qDebug() << "content recived : " << contents;
+    JSONParser jp;
+    jp.setContent(contents);
+
+    time_t nextTime = time(nullptr); // timestamp coutdownd from now
+    while (jp.isPictureExist())
+    {
+        nextTime -= 60 * 60 * 3;
+        DatabaseConnector::getInstance()->sendData( jp.getPhotogrName(),
+                                                    jp.getWidth(),
+                                                    jp.getHeight(),
+                                                    jp.getPictureUrl(),
+                                                    jp.getSmallUrl(),
+                                                    nextTime,
+                                                    jp.getDescription()
+                                                   );
+        jp.nextPic();
+    }
+    qDebug() << "NextLink: " << jp.getNextLink();
 }
-
-
-
 
 
 
@@ -69,7 +90,7 @@ void NetworkManager::onThreadStarted()
 {
     this->manager = new QNetworkAccessManager();
 
-    loadSinglePage(5);
+    loadSinglePage( QUrl (QStringLiteral ("https://api.pexels.com/v1/search?page=1&per_page=80&query=cats") ) );
 }
 
 /*! Function Description: Constructor

@@ -28,7 +28,7 @@ private slots:
 
 private:
     /*!Function Description: Make single get rest request to online storage */
-    void loadSinglePage(const int pageToLoad);
+    void loadSinglePage(const QUrl &url);
 
     /*! Function Description: Parse response from the server */
     void parseResponse(QString contents);

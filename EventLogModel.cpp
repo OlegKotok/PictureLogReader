@@ -22,7 +22,8 @@ int EventLogModel::rowCount(const QModelIndex &) const
 
 /*! Function Description: Implementation of standart virtual function of QAbstractTableModel
  *
- * RETURN: int - current column count
+ * RETURN:
+ *     int - current column count
  *
  */
 int EventLogModel::columnCount(const QModelIndex &) const
