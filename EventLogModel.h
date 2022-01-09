@@ -1,3 +1,9 @@
+/*!   FILENAME:  EventLogModel.h
+ *    DESCRIPTION:
+ *           Implementation  of QAbstractTableModel for our table in qml
+ *           getEventLog() will update datas by actual datas from database
+ */
+
 #include <qqml.h>
 #include <QAbstractTableModel>
 

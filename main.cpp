@@ -8,7 +8,9 @@
 #include <thread>
 #include <ctime>
 #include <chrono>
+#include <QThread>
 #include <DatabaseConnector.h>
+#include "networkmanager.h"
 
 /*! Function Description: Push random datas into DB
  *
@@ -74,9 +76,9 @@ int main(int argc, char *argv[])
 
     qDebug() << "Database manager ok" << Qt::endl;
 
-    /** Put datas to database */
-    std::thread databaseThread (AddRecordsToDB);
-    databaseThread.detach();
+    /** Put datas to database in separeted thread */
+    qDebug() << "Main Thread id " << QThread::currentThreadId() <<endl;
+    NetworkManager::getInstance()->AddPicturesToDB();
 
     qmlRegisterType<EventLogModel>("eventLogModel", 1, 0,
                                    "EventLogModel");

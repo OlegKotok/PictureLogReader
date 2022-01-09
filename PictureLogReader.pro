@@ -1,7 +1,7 @@
 QT += quick
 QT += sql
 
-CONFIG += c++11
+CONFIG += c++17
 
 # You can make your code fail to compile if it uses deprecated APIs.
 # In order to do so, uncomment the following line.
@@ -11,7 +11,8 @@ SOURCES += \
         DatabaseConnector.cpp \
         DatabaseManager.cpp \
         EventLogModel.cpp \
-        main.cpp
+        main.cpp \
+        networkmanager.cpp
 
 RESOURCES += \
     qml.qrc
@@ -34,4 +35,6 @@ HEADERS += \
     DatabaseManager.h \
     EventLogModel.h \
     Singleton.h \
-    databaseexeptions.h
+    apikey.h \
+    databaseexeptions.h \
+    networkmanager.h
