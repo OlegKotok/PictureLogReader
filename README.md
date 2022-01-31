@@ -1,6 +1,6 @@
-Demo project in Qt/qml/C++. Picture Log Reader. Using MVC patterns best practics, c++ and qml models, QAbstractTableModel, database SQLite, c++ templates, std::threads multithreading.
-
 ![Asorted Color Kittens](./kittens.png?raw=true)
+
+Demo project in Qt/qml/C++. Picture Log Reader. Using MVC patterns best practics, c++ and qml models, QAbstractTableModel, database SQLite, c++ templates, std::threads multithreading.
 
 Application taking datas by https from an external source using QNetworkAccessManager asynchronous in an independent thread and storing it into SQLite database, using JSON parser and Rest API, so you can start to use application immediately during updating database, without any collision.
 
