@@ -64,9 +64,7 @@ bool DatabaseManager::getEventLog (QVector<QString>  &headers,  QVector< QVector
  */
 QStringList DatabaseManager::getUrlById (const int id)
 {
-    QStringList m_details;
-
-    return m_details;
+    return {datastorage[id].url, datastorage[id].url2, datastorage[id].description};
 }
 
 

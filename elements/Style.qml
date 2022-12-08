@@ -35,6 +35,7 @@ QtObject
     readonly property int    eventLogButtonDetailsWidth: 160
     readonly property int    eventLogButtonDetailsHeight: 85
     readonly property int    eventLogDetailsSpacing: 25
+    readonly property int    footerHeight: 2
 
     //BUTTONS
     readonly property real   btIdleOpacity: 1.0

@@ -22,8 +22,27 @@ T.Button
         Rectangle {
             id: backgroundRect
             radius: Style.eventLogButtonHeight / 2
-            color: Style.btBgColor
+            color:  Style.btBgColor
             anchors.fill: parent
+        }
+        MouseArea {
+            id: mouser
+            anchors.fill: parent
+            hoverEnabled: true
+        }
+
+        states: State {
+            name: "GreenState"
+            when: mouser.containsMouse
+
+            PropertyChanges {
+                target: backgroundRect
+                color: Style.btGreenColor
+            }
+        }
+
+        transitions: Transition {
+            ColorAnimation {}
         }
     }
 
