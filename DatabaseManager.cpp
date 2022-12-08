@@ -11,6 +11,7 @@
 #include "DatabaseManager.h"
 #include "databaseexeptions.h"
 
+
 /** path to local database */
 #define _DATABASENAME_ "database.sqlite"
 
@@ -20,27 +21,6 @@
 
 template<>
 DatabaseManager * Singleton<DatabaseManager>::m_st_instance_p = nullptr;
-
-
-/** Function Description: Constructor */
-DatabaseManager::DatabaseManager() :
-    QObject (nullptr)
-{
-
-}
-
-
-/** Function Description: Initialize the database */
-void DatabaseManager::initDatabase()
-{
-
-}
-
-void DatabaseManager::createLogsTable()
-{
-
-}
-
 
 //** **************** main functionality **************** **//
 
@@ -54,6 +34,22 @@ void DatabaseManager::createLogsTable()
  */
 bool DatabaseManager::getEventLog (QVector<QString>  &headers,  QVector< QVector<QString> > &data, QString timeshift = "-100 year")
 {
+    headers = {"id", "date", "time", "Photographer", "size", "picture"};
+
+    data.clear();
+
+    for (auto record: datastorage)
+    {
+        QVector<QString> row {
+            QString::number(record.id),
+            "date", "time",
+            record.photographer,
+            QString::number(record.width) + 'x' + QString::number(record.height),
+            record.url
+        };
+       data.push_back(row);
+    }
+
 
     return true;
 }
@@ -96,7 +92,17 @@ void DatabaseManager::pushData (
         QString description
       )
 {
+    DataRecordStruct dr;
+     dr.photographer = photographer;
+     dr.width = width;
+     dr.height = height;
+     dr.url = url;
+     dr.url2 = url2;
+     dr.timestamp = timestamp;
+     dr.description = description;
+     dr.id = ++lastElemntId;
 
+     datastorage.push_back( dr );
 }
 
 

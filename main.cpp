@@ -30,7 +30,7 @@
 void AddRecordsToDB()
 {
     qDebug() << ">>entering thread" << Qt::endl;
-    DatabaseConnector::getInstance()->sendData("Вася", 100, 200, "ddd", "",
+    DatabaseConnector::sendData("Вася", 100, 200, "ddd", "",
                                                 time(nullptr), "current time");
 
     struct tm localTime;
@@ -45,13 +45,13 @@ void AddRecordsToDB()
 
     const QStringList names = {"Петрович", "Хренович", "Бухлович", "Алконович"};
 
-    DatabaseConnector::getInstance()->sendData("Петя", 100, 200, "ddd", "",
+    DatabaseConnector::sendData("Петя", 100, 200, "ddd", "",
                                                 mktime(&localTime), "2021-07-24T15:46:29");
 
     for (auto i=0; i< 1000; i++) {
         time_t nextTime = time(nullptr) - 60 * 60 * 3 * i;
         QString uName = names[rand() % names.size()];
-        DatabaseConnector::getInstance()->sendData(uName, rand()%5000, rand()%3000, "", "", nextTime, asctime(gmtime(&nextTime)));
+        DatabaseConnector::sendData(uName, rand()%5000, rand()%3000, "", "", nextTime, asctime(gmtime(&nextTime)));
 
         std::this_thread::sleep_for(std::chrono::milliseconds(50));
     }

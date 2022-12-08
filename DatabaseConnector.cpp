@@ -9,18 +9,6 @@
 template<>
 DatabaseConnector * Singleton<DatabaseConnector>::m_st_instance_p = nullptr;
 
-/** Function Description: Constructor */
-DatabaseConnector::DatabaseConnector() : QObject (nullptr)
-{
-    Connect();
-}
-
-/*! Function Description: Make signal-slot connection between DatabaseConnector::newDatas signal and DatabaseManager::pushData slot */
-void DatabaseConnector::Connect()
-{
-
-}
-
 /*! Function Description: Emit new signal with datas to DatabaseManage
  *                        Signal will be recived in independed thread
  *
@@ -37,6 +25,6 @@ void DatabaseConnector::Connect()
 void DatabaseConnector::sendData(QString photographer, int width, int height, QString url, QString url2,
                                  time_t timestamp, QString description)
 {
-    /*emit newDatas(photographer, width, height, url, url2,
-                  static_cast<qint64>(timestamp), description);*/
+    DatabaseManager::getInstance()->pushData(photographer, width, height, url, url2,
+                  static_cast<qint64>(timestamp), description);
 }

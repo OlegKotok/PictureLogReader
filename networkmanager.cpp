@@ -18,6 +18,7 @@
 #include "apikey.h"
 #include "JSONParser.h"
 #include <DatabaseConnector.h>
+#include <QMessageBox>
 
 template<>
 NetworkManager * Singleton<NetworkManager>::m_st_instance_p = nullptr;
@@ -62,7 +63,7 @@ void NetworkManager::parseResponse(QString contents)
     while (jp.isPictureExist())
     {
         nextTime -= 60 * 60 * 3;
-        DatabaseConnector::getInstance()->sendData( jp.getPhotogrName(),
+        DatabaseConnector::sendData( jp.getPhotogrName(),
                                                     jp.getWidth(),
                                                     jp.getHeight(),
                                                     jp.getPictureUrl(),
@@ -81,7 +82,8 @@ void NetworkManager::parseResponse(QString contents)
   */
 void NetworkManager::AddPicturesToDB()
 {
-    dataThread->start();
+    //dataThread->start();
+    onThreadStarted();
 }
 
 /*! Function Description: Runs when thread are started. will be working in independed thread with event-loop functionality

@@ -8,9 +8,21 @@
 #define DATABASEMANAGER_H
 
 #include <QObject>
-#include <mutex>
+#include <map>
 
 #include "Singleton.h"
+
+/** will store data in the menory in this struct **/
+struct DataRecordStruct{
+    int id;
+    QString photographer;
+    int width;
+    int height;
+    QString url;
+    QString url2;
+    qint64 timestamp;
+    QString description;
+};
 
 /** Operates data in the local database */
 class DatabaseManager : public QObject, public Singleton<DatabaseManager>
@@ -27,24 +39,15 @@ class DatabaseManager : public QObject, public Singleton<DatabaseManager>
         /** Get picture Url by record-id */
         QStringList getUrlById (const int id);
 
-    public slots:
-
         /** Push new record into database
          *  qint64 timestamp - Epoch Unix Timestamp */
         void pushData(QString photographer, int width, int height, QString url, QString url2,
                       qint64 timestamp, QString description);
 
     private:
-        /** Private constructor because of singleton */
-        DatabaseManager();
-
-        /** Initializes the database */
-        void initDatabase();
-
-        /** Initializes the database */
-        void createLogsTable();
-
-        std::mutex databaseMutex;
+        DatabaseManager() {};
+        int lastElemntId = 0;
+        std::vector<DataRecordStruct> datastorage;
 };
 
 #endif // DATABASEMANAGER_H
