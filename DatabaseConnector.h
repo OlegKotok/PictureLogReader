@@ -26,8 +26,8 @@ private:
 signals:
     /** Signal to DatabaseManager
      *  qint64 timestamp - Epoch Unix Timestamp */
-    void newDatas(QString photographer, int width, int height, QString url, QString url2,
-                  qint64 timestamp, QString description);
+    /*void newDatas(QString photographer, int width, int height, QString url, QString url2,
+                  qint64 timestamp, QString description);*/
 };
 
 #endif // DATABASECONNECTOR_H

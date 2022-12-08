@@ -8,11 +8,6 @@
 #define DATABASEMANAGER_H
 
 #include <QObject>
-#include <QtSql/QSqlDatabase>
-#include <QtSql/QSqlError>
-#include <QtSql/QSqlQuery>
-#include <QtSql/QSqlDriver>
-#include <QtSql/QSqlRecord>
 #include <mutex>
 
 #include "Singleton.h"

@@ -11,6 +11,7 @@
 #include <QThread>
 #include <DatabaseConnector.h>
 #include "networkmanager.h"
+#include <QSslSocket>
 
 /*! Function Description: Push random datas into DB
  *
@@ -63,21 +64,8 @@ int main(int argc, char *argv[])
     qDebug() << "app run" << Qt::endl;
     QGuiApplication app(argc, argv);
 
-    try
-    {
-        DatabaseManager::getInstance();
-    }
-    catch (DatabaseExeption &ex)
-    {
-        qDebug() << Qt::endl << " Database exeption! : " << ex.what() << ex.text();
-        qDebug() << " Last query: " << Qt::endl << ex.lastQuery << Qt::endl;
-        return ex.type();
-    }
-
-    qDebug() << "Database manager ok" << Qt::endl;
-
     /** Put datas to database in separeted thread */
-    qDebug() << "Main Thread id " << QThread::currentThreadId() <<endl;
+    qDebug() << "Main Thread id " << QThread::currentThreadId() << Qt::endl;
     NetworkManager::getInstance()->AddPicturesToDB();
 
     qmlRegisterType<EventLogModel>("eventLogModel", 1, 0,
@@ -89,8 +77,8 @@ int main(int argc, char *argv[])
      *  Install this version of OpenSSL depends from your compiler and put*.ddl
      *  all *.dll from \OpenSSL-Win32 into \Qt\5.15.2\msvc2019\bin folder
      */
-    qDebug() << "OPEN SSL: " << QSslSocket::supportsSsl()
-             << QSslSocket::sslLibraryBuildVersionString() << QSslSocket::sslLibraryVersionString() <<Qt::endl;
+    /*qDebug() << "OPEN SSL: " << QSslSocket::supportsSsl()
+             << QSslSocket::sslLibraryBuildVersionString() << QSslSocket::sslLibraryVersionString() <<Qt::endl;*/
 
     QQmlApplicationEngine engine;
     const QUrl url(QStringLiteral("qrc:/main.qml"));

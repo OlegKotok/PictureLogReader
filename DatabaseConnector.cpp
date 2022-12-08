@@ -18,10 +18,7 @@ DatabaseConnector::DatabaseConnector() : QObject (nullptr)
 /*! Function Description: Make signal-slot connection between DatabaseConnector::newDatas signal and DatabaseManager::pushData slot */
 void DatabaseConnector::Connect()
 {
-    QObject::connect(this, &DatabaseConnector::newDatas,
-                            DatabaseManager::getInstance(), &DatabaseManager::pushData);
 
-    qDebug() << "connected to database" << Qt::endl;
 }
 
 /*! Function Description: Emit new signal with datas to DatabaseManage
@@ -40,6 +37,6 @@ void DatabaseConnector::Connect()
 void DatabaseConnector::sendData(QString photographer, int width, int height, QString url, QString url2,
                                  time_t timestamp, QString description)
 {
-    emit newDatas(photographer, width, height, url, url2,
-                  static_cast<qint64>(timestamp), description);
+    /*emit newDatas(photographer, width, height, url, url2,
+                  static_cast<qint64>(timestamp), description);*/
 }
