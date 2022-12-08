@@ -111,20 +111,17 @@ QVariant EventLogModel::headerData(int section, Qt::Orientation orientation, int
  *      int m_sizeY - number of rows
  *      int m_sizeY - number of columns
  */
-void EventLogModel::getEventLog(QString timeShift)
+void EventLogModel::getEventLog(QString type)
 {
-    qDebug()<<"Getting log from now to "<<timeShift;
+    qDebug()<<"Getting log from now to "<<type;
     beginResetModel();
-    DatabaseManager::getInstance()->getEventLog(m_headers, m_data, timeShift);
+    DatabaseManager::getInstance()->getEventLog(m_headers, m_data, type);
     m_sizeY = m_data.size();
     m_sizeX = m_headers.size();
     qDebug()<<"Records: "<<m_sizeY;
     endResetModel();
 
-    for (auto headerName: m_headers)
-    {
-        qDebug()<<headerName;
-    }
+    current_type = type;
 }
 
 /*! Function Description: Get picture url by record id
@@ -138,7 +135,7 @@ void EventLogModel::getEventLog(QString timeShift)
  */
 QStringList EventLogModel::getPictureUrl(int recordId)
 {
-    return  DatabaseManager::getInstance()->getUrlById(recordId);
+    return  DatabaseManager::getInstance()->getUrlById(current_type, recordId);
 }
 
 

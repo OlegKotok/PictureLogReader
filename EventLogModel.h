@@ -18,7 +18,7 @@ public:
     QHash<int, QByteArray> roleNames() const override;
 
     Q_INVOKABLE QVariant headerData(int section, Qt::Orientation orientation, int role = Qt::DisplayRole) const override;
-    Q_INVOKABLE void getEventLog(QString timeShift = "-100 years");
+    Q_INVOKABLE void getEventLog(QString type);
     Q_INVOKABLE QStringList getPictureUrl(int recordId);
 
 
@@ -27,4 +27,5 @@ private:
     QVector< QVector<QString> > m_data;
     int m_sizeX=0;
     int m_sizeY=0;
+    QString current_type = "Cats";
 };

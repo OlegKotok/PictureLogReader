@@ -36,23 +36,23 @@ Item
         id: headerModel
         ListElement
         {
-            text: qsTr("Day")
-            query: "-1 day"
+            text: qsTr("Cats")
+            query: "Cats"
         }
         ListElement
         {
-            text: qsTr("Week")
-            query: "-7 days"
+            text: qsTr("Dogs")
+            query: "Dogs"
         }
         ListElement
         {
-            text: qsTr("Month")
-            query: "-1 month"
+            text: qsTr("Nature")
+            query: "Nature"
         }
         ListElement
         {
-            text: qsTr("Year")
-            query: "-1 year"
+            text: qsTr("Ukraine")
+            query: "Ukraine"
         }
     }
     //***************** query types model *****************//

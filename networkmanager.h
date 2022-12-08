@@ -28,10 +28,10 @@ private slots:
 
 private:
     /*!Function Description: Make single get rest request to online storage */
-    void loadSinglePage(const QUrl &url);
+    void loadSinglePage(const QUrl &url,  const QString& pic_type);
 
     /*! Function Description: Parse response from the server */
-    void parseResponse(QString contents);
+    void parseResponse(QString contents, const QString& pic_type);
 
     QThread *dataThread;
     QNetworkAccessManager *manager;

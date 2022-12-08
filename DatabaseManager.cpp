@@ -10,6 +10,7 @@
 
 #include "DatabaseManager.h"
 #include "databaseexeptions.h"
+#include "request_string.h"
 
 
 /** path to local database */
@@ -32,17 +33,17 @@ DatabaseManager * Singleton<DatabaseManager>::m_st_instance_p = nullptr;
  *           QVector<QVector<QString>>   &data - Link to the list of the rows for the table, all datas are prepared to the view
  *           QString timeshift - Select log period. Ex: '-1 year', '-2 months', '-3 days'
  */
-bool DatabaseManager::getEventLog (QVector<QString>  &headers,  QVector< QVector<QString> > &data, QString timeshift = "-100 year")
+bool DatabaseManager::getEventLog (QVector<QString>  &headers,  QVector< QVector<QString> > &data, QString category="Cats")
 {
-    headers = {"id", "date", "time", "Photographer", "size", "picture"};
+    headers = {"id", "date time", "category", "Photographer", "size", "picture"};
 
     data.clear();
 
-    for (auto record: datastorage)
+    for (auto record: datastorage[category])
     {
         QVector<QString> row {
             QString::number(record.id),
-            "date", "time",
+            " time ", record.type,
             record.photographer,
             QString::number(record.width) + 'x' + QString::number(record.height),
             record.url
@@ -62,9 +63,10 @@ bool DatabaseManager::getEventLog (QVector<QString>  &headers,  QVector< QVector
  *    RETURN:
  *           QStringList - the list of parameters
  */
-QStringList DatabaseManager::getUrlById (const int id)
+QStringList DatabaseManager::getUrlById (const QString category, const int id)
 {
-    return {datastorage[id].url, datastorage[id].url2, datastorage[id].description};
+    QStringList l;
+    return {datastorage[category][id].url, datastorage[category][id].url2, datastorage[category][id].description};
 }
 
 
@@ -87,7 +89,8 @@ void DatabaseManager::pushData (
         QString url,
         QString url2,
         qint64 timestamp,
-        QString description
+        QString description,
+        const QString& pic_type
       )
 {
     DataRecordStruct dr;
@@ -98,9 +101,20 @@ void DatabaseManager::pushData (
      dr.url2 = url2;
      dr.timestamp = timestamp;
      dr.description = description;
-     dr.id = ++lastElemntId;
+     dr.id = datastorage[pic_type].size() + 1;
+     dr.type = pic_type;
 
-     datastorage.push_back( dr );
+     datastorage[pic_type].push_back( dr );
 }
 
+DatabaseManager::DatabaseManager()
+{
+    //prepare database storage
+    for (auto category: request_types)
+    {
+        std::vector<DataRecordStruct> data;
+        data.reserve(80);
+        datastorage.insert(category, data);
+    }
+}
 

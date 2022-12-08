@@ -19,13 +19,14 @@
 #include "JSONParser.h"
 #include <DatabaseConnector.h>
 #include <QMessageBox>
+#include "request_string.h"
 
 template<>
 NetworkManager * Singleton<NetworkManager>::m_st_instance_p = nullptr;
 
 
 /*!Function Description: Make single get rest request to online storage */
-void NetworkManager::loadSinglePage(const QUrl &url)
+void NetworkManager::loadSinglePage(const QUrl &url, const QString &pic_type)
 {
     /****** get curl request ******/
     qDebug() << "Thread id " << QThread::currentThreadId() << Qt::endl;
@@ -40,7 +41,7 @@ void NetworkManager::loadSinglePage(const QUrl &url)
             qDebug() << "Reply Thread : " << QThread::currentThreadId() << Qt::endl;
 
             /****** parse response ******/
-            parseResponse( QString::fromUtf8( reply->readAll() ) );
+            parseResponse( QString::fromUtf8( reply->readAll() ), pic_type);
         }
         else
         {
@@ -53,7 +54,7 @@ void NetworkManager::loadSinglePage(const QUrl &url)
 }
 
 /*! Function Description: Parse response from the server and put datas to database*/
-void NetworkManager::parseResponse(QString contents)
+void NetworkManager::parseResponse(QString contents, const QString &pic_type)
 {
     qDebug() << "content recived : " << contents;
     JSONParser jp;
@@ -69,7 +70,8 @@ void NetworkManager::parseResponse(QString contents)
                                                     jp.getPictureUrl(),
                                                     jp.getSmallUrl(),
                                                     nextTime,
-                                                    jp.getDescription()
+                                                    jp.getDescription(),
+                                                    pic_type
                                                    );
         jp.nextPic();
     }
@@ -92,7 +94,8 @@ void NetworkManager::onThreadStarted()
 {
     this->manager = new QNetworkAccessManager();
 
-    loadSinglePage( QUrl (QStringLiteral ("https://api.pexels.com/v1/search?page=1&per_page=80&query=cats") ) );
+    for (auto& pic_type: request_types)
+    loadSinglePage( QUrl (QStringLiteral ("https://api.pexels.com/v1/search?page=1&per_page=80&query=") +  pic_type),  pic_type);
 }
 
 /*! Function Description: Constructor

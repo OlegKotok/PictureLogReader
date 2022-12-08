@@ -40,4 +40,5 @@ HEADERS += \
     Singleton.h \
     apikey.h \
     databaseexeptions.h \
-    networkmanager.h
+    networkmanager.h \
+    request_string.h

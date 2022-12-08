@@ -13,7 +13,7 @@ class DatabaseConnector
 {
     public:
         static void sendData(QString photographer, int width, int height, QString url, QString url2,
-                  time_t timestamp, QString description);
+                  time_t timestamp, QString description, const QString& pic_type);
 };
 
 #endif // DATABASECONNECTOR_H

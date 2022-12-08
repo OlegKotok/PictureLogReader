@@ -23,8 +23,8 @@ DatabaseConnector * Singleton<DatabaseConnector>::m_st_instance_p = nullptr;
  *      QString description - image description
  */
 void DatabaseConnector::sendData(QString photographer, int width, int height, QString url, QString url2,
-                                 time_t timestamp, QString description)
+                                 time_t timestamp, QString description, const QString& pic_type)
 {
     DatabaseManager::getInstance()->pushData(photographer, width, height, url, url2,
-                  static_cast<qint64>(timestamp), description);
+                  static_cast<qint64>(timestamp), description, pic_type);
 }

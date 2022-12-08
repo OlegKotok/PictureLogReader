@@ -13,51 +13,6 @@
 #include "networkmanager.h"
 #include <QSslSocket>
 
-/*! Function Description: Push random datas into DB
- *
- * DEPENDENCY:
- *      DtbaseManager::pushData() - public slot to push datas
- *
- * INPUTS:
- * PARAMETERS:
- *     const QModelIndex &index - index of current cell
- *
- * OUTPUTS:
- * RETURN:
- *     QVariant - QString of the cell by index
- *
- */
-void AddRecordsToDB()
-{
-    qDebug() << ">>entering thread" << Qt::endl;
-    DatabaseConnector::sendData("Вася", 100, 200, "ddd", "",
-                                                time(nullptr), "current time");
-
-    struct tm localTime;
-    localTime.tm_year = 2021 - 1900;
-    localTime.tm_mon  = 07 - 1;
-    localTime.tm_mday = 24;
-    localTime.tm_hour = 15;
-    localTime.tm_min = 46;
-    localTime.tm_sec = 29;
-
-    //implement databaseConnector, class just emit signal to database thread
-
-    const QStringList names = {"Петрович", "Хренович", "Бухлович", "Алконович"};
-
-    DatabaseConnector::sendData("Петя", 100, 200, "ddd", "",
-                                                mktime(&localTime), "2021-07-24T15:46:29");
-
-    for (auto i=0; i< 1000; i++) {
-        time_t nextTime = time(nullptr) - 60 * 60 * 3 * i;
-        QString uName = names[rand() % names.size()];
-        DatabaseConnector::sendData(uName, rand()%5000, rand()%3000, "", "", nextTime, asctime(gmtime(&nextTime)));
-
-        std::this_thread::sleep_for(std::chrono::milliseconds(50));
-    }
-    qDebug() << "<<leaving thread" << Qt::endl;
-}
-
 int main(int argc, char *argv[])
 {
     QCoreApplication::setAttribute(Qt::AA_EnableHighDpiScaling);
